@@ -1,0 +1,11 @@
+.main{
+  margin: 10px;
+}
+
+.productsDiv {
+  border-top: 1px solid black;
+}
+
+.cartDiv {
+  padding: 20px;
+}
