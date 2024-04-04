@@ -1,0 +1,15 @@
+.main {
+    display: flex;
+    flex-direction: row;
+    background-color: red;
+}
+
+.productsDiv {
+    display: flex;
+    flex-direction: column;
+}
+
+.cartDiv {
+    display: flex;
+    flex-direction: column;
+}
