@@ -1,7 +1,13 @@
 import styles from './App.css';
 import React, { useState, useEffect } from 'react';
 import ProductComponent from './components/productComponent/productComponent';
-import CartComponent from './components/cartComponent/cartComponent';
+import CartPage from './pages/cartPage';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Routes
+} from "react-router-dom";
 
 function App() {
   const [productData, setProductData] = useState([]);
@@ -24,14 +30,14 @@ function App() {
 
   // load items from search
   useEffect(() => {
-    let url = "https://dummyjson.com/products/search?q=" + query
+    const url = "https://dummyjson.com/products/search?q=" + query
     fetch(url).
     then(res => res.json()).then((data) => {
       setProductData(data);
     }).catch(error => {
       console.error("Error fetching data:", error);
     })
-  })
+  }, [query])
 
   // add item to cart
   const addItem = (id) => {
@@ -54,22 +60,38 @@ function App() {
         const item = data.products[5];
         setCartProducts(prevCartProducts => [...prevCartProducts, item]);
       }).catch(error => {
-        console.error("Error patching data");
+        console.error("Error patching data", error);
       })
   }
 
   // delete items from cart
-  const removeItem = (id) => {
-    setCartProducts(cartProducts.filter(prod => 
-      prod.id !== id
-    ))
-  }
+  // const removeItem = (id) => {
+  //   setCartProducts(cartProducts.filter(prod => 
+  //     prod.id !== id
+  //   ))
+  // }
 
   return (
     <div className={styles.main}>
 
+      <Router>
+        <div>
+          <Routes>
+            <Route path='/cart' element={<CartPage cartProducts={cartProducts}/>} />
+            <Route path='/' />
+          </Routes>
+          <Link to="/cart">Go to cart</Link>
+          <Link to="/">Landing page</Link>
+        </div>
+      </Router>
+      
+
       {/* search for items */}
-      <input type='text' placeholder='Search for an item' onChange={(e) => setQuery(e.target.value)}></input>
+      <input 
+      type='text' 
+      placeholder='Search for an item and press enter' 
+      onChange={e => setQuery(e.target.value)}
+      value={query}></input>
 
       {/* list of available products */}
       <div className={styles.productsDiv}>
@@ -93,7 +115,7 @@ function App() {
 
       {/* list of products in the cart */}
       <div className={styles.cartDiv}>
-        <h1>Cart</h1>
+        {/* <h1>Cart</h1>
         {(typeof cartProducts === 'undefined') ? (
           <p>Loading...</p>
         ) : (
@@ -108,7 +130,9 @@ function App() {
               />
             </div>
           ))
-        )}
+        )} */}
+        {/* <CartPage 
+        cartProducts={cartProducts}/> */}
       </div>
       
     </div>
