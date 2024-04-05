@@ -4,26 +4,33 @@ import styles from "./cartPage.module.css"
 
 const CartPage = ({ cartProducts, removeItem, increaseQuantity, decreaseQuantity }) => {
 
-    const [cart, setCart] = useState([]);
-    const [isOpen, setOpen] = useState(false);
-    const [total, setTotal] = useState(0);
+    // state variables
+    const [cart, setCart] = useState([]); // cart
+    const [isOpen, setOpen] = useState(false); // tracks if component is visible
+    const [total, setTotal] = useState(0); // total price of cart
 
+    // sets cart data
     useEffect(() => {
         setCart([...cartProducts]);
     }, [cartProducts]);
 
+    // calls removeItem prop
     const handleRemove = (id) => {
         removeItem(id);
     }
 
+    // calls increaseQuantity prop
     const handleIncrease = (id) => {
         increaseQuantity(id);
     }
 
+    // calls decreaseQuantity prop
     const handleDecrease = (id) => {
         decreaseQuantity(id);
     }
 
+    // calculates and sets total price
+    // whenever cart is updated
     useEffect(() => {
         let finPrice = 0;
         cartProducts.forEach(prod => {
@@ -40,6 +47,7 @@ const CartPage = ({ cartProducts, removeItem, increaseQuantity, decreaseQuantity
                 ? "translate(0%,0%) scale(1)"
                 : "translate(-10%,-10%) scale(0)",
                 }}>
+
                 {/* cancel button*/}
                 <div className={styles.cancelDiv}>
                     <span onClick={() => {
@@ -49,8 +57,7 @@ const CartPage = ({ cartProducts, removeItem, increaseQuantity, decreaseQuantity
                     </span>
                 </div>
 
-                
-
+                {/** renders cart, total, and checkout */}
                 <div className={styles.component}>
                     <h2 style={{color: "white"}}>Your Cart</h2>
                     {(typeof cart === 'undefined') ? (
@@ -69,13 +76,18 @@ const CartPage = ({ cartProducts, removeItem, increaseQuantity, decreaseQuantity
                             />
                         ))
                     )}
+
+                    {/**total price */}
                     <div>
                         <h3 style={{color: "white"}}>Total: ${total}</h3>
                     </div>
+
+                    {/**checkout */}
                     <button className={styles.checkout}>Checkout</button>
                 </div>
             </div>
 
+            {/**view cart */}
             <div className={styles.button}>
                 <button onClick={() => {
                         setOpen(true);

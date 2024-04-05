@@ -5,79 +5,80 @@ import styles from './homePage.module.css';
 
 const HomePage = () => {
 
-    const [productData, setProductData] = useState([]);
-    const [cartProducts, setCartProducts] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [category, setCategory] = useState('');
-    const [total, setTotal] = useState(0);
+  // state variables
+  const [productData, setProductData] = useState([]); // available product data
+  const [cartProducts, setCartProducts] = useState([]); // cart data 
+  const [searchQuery, setSearchQuery] = useState(''); // keyword search query
+  const [category, setCategory] = useState(''); // category search query
 
-    // load all available products
-    useEffect(() => {
-        fetch("https://dummyjson.com/products").
-        then(res => res.json()).
-        then((data) => {
-            setProductData(data)
-        }).catch(error => {
-            console.error("Error:", error);
-            }
-        )
-    }, [])
-
-    // remove all quantities of that item from cart
-    const removeItem = (id) => {
-      const index = cartProducts.findIndex(prod => prod.id === id);
-      const updatedProducts = [...cartProducts];
-      if(index !== -1){ // if item is in cart
-        updatedProducts[index].quantity = 0; // set quantity to 0
-        setCartProducts(cartProducts.filter(prod => 
-            prod.id !== id
-        ))
-      }
-      console.log(cartProducts);
-    }
-
-    const decreaseQuantity = (id) => {
-      const index = cartProducts.findIndex(prod => prod.id === id); // find item in the cart
-      const updatedProducts = [...cartProducts];
-      if(index !== -1){ // if item in cart
-        const quantity = updatedProducts[index].quantity;
-        updatedProducts[index].quantity -= 1
-        if(quantity > 1){
-          setCartProducts(updatedProducts);
-        } else {
-          removeItem(id); // if quantity is 1, item is completely removed from cart
-        }
-      }
-      console.log(cartProducts);
-    }
-
-    // load items from search by keyword
-    useEffect(() => {
-        const url = "https://dummyjson.com/products/search?q=" + searchQuery
-        fetch(url).
-        then(res => res.json()).then((data) => {
-          setProductData(data);
-        }).catch(error => {
-        console.error("Error fetching data:", error);
-        })
-    }, [searchQuery])
-
-    // load items from search by category
-    useEffect(() => {
-      let url = "https://dummyjson.com/products/category/"
-      if(category === ''){
-        url = "https://dummyjson.com/products"
-      } else {
-        url = "https://dummyjson.com/products/category/" + category
-      }
-      fetch(url).
+  // load all available products
+  useEffect(() => {
+      fetch("https://dummyjson.com/products").
       then(res => res.json()).
       then((data) => {
+          setProductData(data)
+      }).catch(error => {
+          console.error("Error:", error);
+          }
+      )
+  }, [])
+
+  // remove all quantities of that item from cart
+  const removeItem = (id) => {
+    const index = cartProducts.findIndex(prod => prod.id === id);
+    const updatedProducts = [...cartProducts];
+    if(index !== -1){ // if item is in cart
+      updatedProducts[index].quantity = 0; // set quantity to 0
+      setCartProducts(cartProducts.filter(prod => 
+          prod.id !== id
+      ))
+    }
+    console.log(cartProducts);
+  }
+
+  // decrease quantity of item in cart
+  const decreaseQuantity = (id) => {
+    const index = cartProducts.findIndex(prod => prod.id === id); // find item in the cart
+    const updatedProducts = [...cartProducts];
+    if(index !== -1){ // if item in cart
+      const quantity = updatedProducts[index].quantity;
+      updatedProducts[index].quantity -= 1
+      if(quantity > 1){
+        setCartProducts(updatedProducts);
+      } else {
+        removeItem(id); // if quantity is 1, item is completely removed from cart
+      }
+    }
+    console.log(cartProducts);
+  }
+
+  // load items from search by keyword
+  useEffect(() => {
+      const url = "https://dummyjson.com/products/search?q=" + searchQuery
+      fetch(url).
+      then(res => res.json()).then((data) => {
         setProductData(data);
       }).catch(error => {
-        console.error("Error fetching data:", error);
+      console.error("Error fetching data:", error);
       })
-    }, [category])
+  }, [searchQuery])
+
+  // load items from search by category
+  useEffect(() => {
+    let url = "https://dummyjson.com/products/category/"
+    if(category === ''){
+      url = "https://dummyjson.com/products"
+    } else {
+      url = "https://dummyjson.com/products/category/" + category
+    }
+    fetch(url).
+    then(res => res.json()).
+    then((data) => {
+      setProductData(data);
+    }).catch(error => {
+      console.error("Error fetching data:", error);
+    })
+  }, [category])
 
   // add item to cart
   const addItem = (id) => {
@@ -109,6 +110,7 @@ const HomePage = () => {
       console.log(cartProducts);
   }
 
+  // increase quantity of item in cart
   const increaseQuantity = (id) => {
     const index = cartProducts.findIndex(product => product.id === id);
     const updatedCartProducts = [...cartProducts];
