@@ -1,19 +1,14 @@
-import React, {useState, useEffect } from "react";
+import React, {useState, useEffect, useRef } from "react";
 import ProductComponent from "../../components/productComponent/productComponent";
 import CartPage from "../cart/cartPage";
 import styles from './homePage.module.css';
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    Link
-} from "react-router-dom";
 
 const HomePage = () => {
 
     const [productData, setProductData] = useState([]);
     const [cartProducts, setCartProducts] = useState([]);
-    const [query, setQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [category, setCategory] = useState('');
 
     // load all available products
     useEffect(() => {
@@ -27,6 +22,7 @@ const HomePage = () => {
         )
     }, [])
 
+    // remove items from cart
     const removeItem = (id) => {
       const index = cartProducts.findIndex(prod => prod.id === id);
       const updatedProducts = [...cartProducts];
@@ -44,16 +40,33 @@ const HomePage = () => {
       console.log(cartProducts);
   }
 
-    // load items from search
+    // load items from search by keyword
     useEffect(() => {
-        const url = "https://dummyjson.com/products/search?q=" + query
+        const url = "https://dummyjson.com/products/search?q=" + searchQuery
         fetch(url).
         then(res => res.json()).then((data) => {
-        setProductData(data);
+          setProductData(data);
         }).catch(error => {
         console.error("Error fetching data:", error);
         })
-    }, [query])
+    }, [searchQuery])
+
+    // load items from search by category
+    useEffect(() => {
+      let url = "https://dummyjson.com/products/category/"
+      if(category === ''){
+        url = "https://dummyjson.com/products"
+      } else {
+        url = "https://dummyjson.com/products/category/" + category
+      }
+      fetch(url).
+      then(res => res.json()).
+      then((data) => {
+        setProductData(data);
+      }).catch(error => {
+        console.error("Error fetching data:", error);
+      })
+    }, [category])
 
     // add item to cart
   const addItem = (id) => {
@@ -90,43 +103,60 @@ const HomePage = () => {
   }
 
     return (
-
         <div>
+          <div className={styles.topRow}>
+
+            <div>
+              <CartPage cartProducts={cartProducts} updateCart={removeItem} />
+            </div>
+
+            <div>
+              <h1 style={{textAlign: "center", marginLeft: "680px"}}>Welcome to ePurchase</h1>
+            </div>
+            
+          </div>
+        
         {/* search for items */}
-            <input 
-            type='text' 
-            placeholder='Search for an item and press enter' 
-            onChange={e => setQuery(e.target.value)}
-            value={query}></input>
-            <div className={styles.main}>
-    
-          
-    
-          {/* list of available products */}
-          <div className={styles.productsDiv}>
-            <h1>Product List</h1>
-            {(typeof productData.products === 'undefined') ? (
-              <p>Loading...</p>
-            ) : (
-              productData.products.map(product => (
-                <div>
-                  <ProductComponent 
-                    key={product.id}
-                    name={product.title}
-                    price={product.price}
-                    rating={product.rating}
-                    onClick={() => addItem(product.id)}
-                  />
-                </div>
-              ))
-            )}
-          </div>
+        <div className={styles.forms}>
+          <input 
+          type='text' 
+          placeholder='keyword search' 
+          onChange={e => setSearchQuery(e.target.value)}
+          value={searchQuery}
+          style={{marginRight: "10px"}}></input>
 
-          <div className={styles.cartDiv}>
-            <CartPage cartProducts={cartProducts} updateCart={removeItem}/>
-          </div>
-
+          <input
+          type="text"
+          placeholder="category search"
+          onChange={e => setCategory(e.target.value)}
+          value={category}
+          style={{marginLeft: "10px"}}></input>          
         </div>
+
+          <div className={styles.main}>
+    
+            {/* list of available products */}
+            <div className={styles.productsDiv}>
+              <p>View and search for all available products below:</p>
+              {(typeof productData.products === 'undefined') ? (
+                <p>Loading...</p>
+              ) : (
+                productData.products.map(product => (
+                  <div>
+                    <ProductComponent 
+                      key={product.id}
+                      name={product.title}
+                      description={product.description}
+                      price={product.price}
+                      rating={product.rating}
+                      thumbnail={product.thumbnail}
+                      onClick={() => addItem(product.id)}
+                    />
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         </div>
       );
 }

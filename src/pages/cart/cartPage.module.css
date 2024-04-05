@@ -1,7 +1,37 @@
 .cart {
+    position: absolute;
     top: 0;
-    right: 0;
+    left: 0;
+    width: 450px;
+    height: 90%;
+    max-height: 100%;
+    background-color: #c5efcb;
     transition: transform 0.4s ease-in-out;
-    transform-origin: right;
-     background-color: green;
+    transform-origin: top left;
+    overflow-y: auto;
+}
+
+.cancelDiv {
+    text-align: right;
+    padding-top: 20px;
+    padding-right: 20px;
+    margin-right: 15px;
+}
+
+.cancel {
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.component {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button {
+    margin-left: 30px;
+    margin-top: 30px;
+    cursor: pointer;
+    width: fit-content;
 }
