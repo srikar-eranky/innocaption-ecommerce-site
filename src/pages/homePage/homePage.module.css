@@ -1,6 +1,8 @@
 .topRow {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    width: 58.7%;
 }
 
 .main {
@@ -12,11 +14,20 @@
 .productsDiv {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
+    max-width: 450px;
 }
 
 .forms {
     display: flex;
     flex-direction: row;
     justify-content: center;
+}
+
+.form {
+    margin-right: 10px;
+    border-radius: 10px;
+    border: 1px solid black;
+    padding: 10px 0px 10px 10px;
 }

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef } from "react";
+import React, {useState, useEffect } from "react";
 import ProductComponent from "../../components/productComponent/productComponent";
 import CartPage from "../cart/cartPage";
 import styles from './homePage.module.css';
@@ -9,6 +9,7 @@ const HomePage = () => {
     const [cartProducts, setCartProducts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [category, setCategory] = useState('');
+    const [total, setTotal] = useState(0);
 
     // load all available products
     useEffect(() => {
@@ -22,23 +23,33 @@ const HomePage = () => {
         )
     }, [])
 
-    // remove items from cart
+    // remove all quantities of that item from cart
     const removeItem = (id) => {
       const index = cartProducts.findIndex(prod => prod.id === id);
       const updatedProducts = [...cartProducts];
-      if(index !== -1){
+      if(index !== -1){ // if item is in cart
+        updatedProducts[index].quantity = 0; // set quantity to 0
+        setCartProducts(cartProducts.filter(prod => 
+            prod.id !== id
+        ))
+      }
+      console.log(cartProducts);
+    }
+
+    const decreaseQuantity = (id) => {
+      const index = cartProducts.findIndex(prod => prod.id === id); // find item in the cart
+      const updatedProducts = [...cartProducts];
+      if(index !== -1){ // if item in cart
         const quantity = updatedProducts[index].quantity;
         updatedProducts[index].quantity -= 1
         if(quantity > 1){
           setCartProducts(updatedProducts);
         } else {
-          setCartProducts(cartProducts.filter(prod => 
-            prod.id !== id
-          ))
+          removeItem(id); // if quantity is 1, item is completely removed from cart
         }
       }
       console.log(cartProducts);
-  }
+    }
 
     // load items from search by keyword
     useEffect(() => {
@@ -68,7 +79,7 @@ const HomePage = () => {
       })
     }, [category])
 
-    // add item to cart
+  // add item to cart
   const addItem = (id) => {
     const url = 'https://dummyjson.com/carts/1';
     fetch(url, {
@@ -89,11 +100,7 @@ const HomePage = () => {
         const item = data.products[5];
         const index = cartProducts.findIndex(product => product.id === item.id);
 
-        if(index !== -1){
-          const updatedCartProducts = [...cartProducts];
-          updatedCartProducts[index].quantity += item.quantity;
-          setCartProducts(updatedCartProducts);
-        } else {
+        if(index === -1){ //if item is not in cart
           setCartProducts(prevCartProducts => [...prevCartProducts, item]);
         }
       }).catch(error => {
@@ -102,16 +109,30 @@ const HomePage = () => {
       console.log(cartProducts);
   }
 
+  const increaseQuantity = (id) => {
+    const index = cartProducts.findIndex(product => product.id === id);
+    const updatedCartProducts = [...cartProducts];
+    if(index !== -1){
+      updatedCartProducts[index].quantity += 1;
+      setCartProducts(updatedCartProducts);
+    } else {
+      addItem(id);
+    }
+  }
+
     return (
         <div>
           <div className={styles.topRow}>
 
             <div>
-              <CartPage cartProducts={cartProducts} updateCart={removeItem} />
+              <CartPage cartProducts={cartProducts} 
+              removeItem={removeItem} 
+              increaseQuantity={increaseQuantity}
+              decreaseQuantity={decreaseQuantity} />
             </div>
 
             <div>
-              <h1 style={{textAlign: "center", marginLeft: "680px"}}>Welcome to ePurchase</h1>
+              <h1 style={{textAlign: "center", float: "center"}}>Welcome to ePurchase</h1>
             </div>
             
           </div>
@@ -120,17 +141,17 @@ const HomePage = () => {
         <div className={styles.forms}>
           <input 
           type='text' 
-          placeholder='keyword search' 
+          placeholder='keyword search...' 
           onChange={e => setSearchQuery(e.target.value)}
           value={searchQuery}
-          style={{marginRight: "10px"}}></input>
+          className={styles.form}></input>
 
           <input
           type="text"
-          placeholder="category search"
+          placeholder="category search..."
           onChange={e => setCategory(e.target.value)}
           value={category}
-          style={{marginLeft: "10px"}}></input>          
+          className={styles.form}></input>          
         </div>
 
           <div className={styles.main}>
@@ -143,15 +164,18 @@ const HomePage = () => {
               ) : (
                 productData.products.map(product => (
                   <div>
+                    <div style={{backgroundColor: "white", backgroundClip: "border-box", marginBottom: "10px"}}>
                     <ProductComponent 
                       key={product.id}
                       name={product.title}
-                      description={product.description}
                       price={product.price}
                       rating={product.rating}
                       thumbnail={product.thumbnail}
+                      category={product.category}
                       onClick={() => addItem(product.id)}
                     />
+                    </div>
+                    <div style={{textAlign: "center", marginBottom: "60px"}}><b>Description:</b> {product.description}</div>
                   </div>
                 ))
               )}

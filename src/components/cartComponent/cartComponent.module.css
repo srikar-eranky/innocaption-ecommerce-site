@@ -1,6 +1,66 @@
 .component {
     margin: 20px;
     padding: 20px;
-    border: 1px solid black;
+    background-color: white;
+    border-radius: 10%;
     text-align: center;
+    padding: 50px;
+}
+
+.detail {
+    margin-bottom: 10px;
+}
+
+.updateQuantity {
+    border-radius: 100%;
+    margin: 0px 10px 0px 10px;
+    border: hidden;
+    cursor: pointer;
+}
+
+#increase:hover {
+    background-color: #c5efcb;
+}
+
+#decrease:hover {
+    background-color: #efc5c5;
+}
+
+.delete {
+    padding: 10px;
+    border-radius: 10%;
+    border: hidden;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+.delete:hover {
+    background-color: #f08181;
+    animation: jello-horizontal 0.8s both;
+}
+
+@keyframes jello-horizontal {
+    0% {
+        transform: scale3d(1, 1, 1);
+    }
+    30% {
+        transform: scale3d(1.25, 0.75, 1);
+    }
+    40% {
+        transform: scale3d(0.75, 1.25, 1);
+    }
+    50% {
+        transform: scale3d(1.15, 0.85, 1);
+    }
+    65% {
+        transform: scale3d(0.95, 1.05, 1);
+    }
+    75% {
+        transform: scale3d(1.05, 0.95, 1);
+    }
+    100% {
+        transform: scale3d(1, 1, 1);
+    }
 }
