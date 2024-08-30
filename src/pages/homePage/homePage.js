@@ -98,12 +98,14 @@ const HomePage = () => {
       })
       .then(res => res.json()).
       then((data) => {
-        const item = data.products[5];
+        const item = data.products[data.products.length - 1];
+        console.log("Item: ", item);
         const index = cartProducts.findIndex(product => product.id === item.id);
 
         if(index === -1){ //if item is not in cart
           setCartProducts(prevCartProducts => [...prevCartProducts, item]);
         }
+        console.log(data);
       }).catch(error => {
         console.error("Error patching data", error);
       })

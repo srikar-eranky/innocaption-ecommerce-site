@@ -79,7 +79,7 @@ const CartPage = ({ cartProducts, removeItem, increaseQuantity, decreaseQuantity
 
                     {/**total price */}
                     <div>
-                        <h3 style={{color: "white"}}>Total: ${total}</h3>
+                        <h3 style={{color: "white"}}>Total: ${total.toFixed(2)}</h3>
                     </div>
 
                     {/**checkout */}
